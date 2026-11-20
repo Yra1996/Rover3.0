@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>UR-ROVER — Робо-доставка Астрахань</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0B111A;
+      color: #FFFFFF;
+      padding: 16px 16px 120px 16px;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2AD4FF 0%, #0A84FF 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: #07121E;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      font-weight: 700;
+      color: #2AD4FF;
+      letter-spacing: 0.8px;
+      margin-top: 2px;
+    }
+
+    .location-pill {
+      background: #141E2C;
+      border: 1px solid #223044;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #D0DCEB;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ai-card {
+      background: linear-gradient(180deg, #131E2E 0%, #0F1724 100%);
+      border: 1px solid #22344D;
+      border-radius: 20px;
+      padding: 20px 16px;
+      text-align: center;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .ai-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .ai-hint {
+      font-size: 13px;
+      color: #8E9FB5;
+      line-height: 1.4;
+      margin-bottom: 18px;
+    }
+
+    .mic-btn {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      border: none;
+      background: radial-gradient(circle at 30% 30%, #4BE1FF, #0095FF);
+      box-shadow: 0 0 25px rgba(42, 212, 255, 0.45);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-bottom: 12px;
+      touch-action: manipulation;
+    }
+
+    .mic-btn:active {
+      transform: scale(0.93);
+    }
+
+    .mic-btn.recording {
+      background: radial-gradient(circle at 30% 30%, #FF6B6B, #E02424);
+      box-shadow: 0 0 28px rgba(255, 75, 75, 0.65);
+    }
+
+    .ai-status {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2AD4FF;
+      margin-bottom: 14px;
+      min-height: 18px;
+    }
+
+    .ai-input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ai-text-input {
+      flex: 1;
+      background: #0B111A;
+      border: 1px solid #263852;
+      border-radius: 12px;
+      padding: 11px 12px;
+      color: #FFFFFF;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .ai-text-input:focus {
+      border-color: #2AD4FF;
+    }
+
+    .ai-submit-btn {
+      background: #1B9CE5;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 12px;
+      padding: 0 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      touch-action: manipulation;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 20px 0 12px 0;
+    }
+
+    .section-title {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .zone-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-align: center;
+      letter-spacing: 0.6px;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .zone-hot {
+      background: rgba(255, 77, 77, 0.14);
+      color: #FF6B6B;
+      border: 1px solid rgba(255, 77, 77, 0.35);
+    }
+
+    .zone-cold {
+      background: rgba(42, 212, 255, 0.14);
+      color: #38D9FF;
+      border: 1px solid rgba(42, 212, 255, 0.35);
+    }
+
+    .item-card {
+      background: #131C29;
+      border: 1px solid #1F2E42;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .item-info {
+      flex: 1;
+    }
+
+    .item-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .item-desc {
+      font-size: 13px;
+      color: #8899AE;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+
+    .item-price {
+      font-size: 16px;
+      font-weight: 800;
+      color: #2AD4FF;
+    }
+
+    .item-action {
+      flex-shrink: 0;
+    }
+
+    .add-btn {
+      background: #1C2838;
+      border: 1px solid #2D4159;
+      color: #FFFFFF;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #1C2838;
+      border: 1px solid #2AD4FF;
+      border-radius: 12px;
+      padding: 6px 10px;
+    }
+
+    .qty-btn {
+      background: none;
+      border: none;
+      color: #2AD4FF;
+      font-size: 20px;
+      font-weight: 800;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+    }
+
+    .qty-val {
+      font-size: 15px;
+      font-weight: 700;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .address-box {
+      background: #131C29;
+      border: 1px solid #1F2E42;
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 20px;
+    }
+
+    .address-label {
+      font-size: 12px;
+      color: #8E9FB5;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .address-input {
+      width: 100%;
+      background: #0B111A;
+      border: 1px solid #263852;
+      border-radius: 10px;
+      padding: 11px 12px;
+      color: #FFFFFF;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .bottom-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 36, 0.97);
+      border-top: 1px solid #22334A;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom)) 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 9999;
+    }
+
+    .cart-summary-label {
+      font-size: 12px;
+      color: #8E9FB5;
+    }
+
+    .cart-summary-total {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-top: 2px;
+    }
+
+    .order-btn {
+      background: linear-gradient(135deg, #2AD4FF 0%, #0A84FF 100%);
+      color: #07121E;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .order-btn.disabled {
+      opacity: 0.45;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 9, 15, 0.88);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 10000;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #141E2C;
+      border: 1px solid #2B415E;
+      border-radius: 20px;
+      padding: 22px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+
+    .modal-title {
+      font-size: 19px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #2AD4FF;
+    }
+
+    .modal-body {
+      font-size: 14px;
+      color: #D0DCEB;
+      line-height: 1.5;
+      text-align: left;
+      background: #0B111A;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      white-space: pre-line;
+    }
+
+    .modal-close {
+      width: 100%;
+      background: #2AD4FF;
+      color: #07121E;
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="brand">
+      <div class="logo-box">UR</div>
+      <div>
+        <div class="brand-title">UR-ROVER</div>
+        <div class="brand-sub">РОБО-ДОСТАВКА</div>
+      </div>
+    </div>
+    <div class="location-pill">📍 Эллинг, Астрахань</div>
+  </div>
+
+  <div class="ai-card">
+    <div class="ai-title">🎙️ Заказ голосом через ИИ</div>
+    <div class="ai-hint">Нажмите микрофон или напишите: «Большая пепперони, бургер и кола на Бабефа 4»</div>
+    <button type="button" class="mic-btn" id="micBtn" onclick="startVoice()">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="#07121E">
+        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15a.998.998 0 0 0-.98-.85c-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08a6.993 6.993 0 0 0 5.91-5.78c.1-.6-.39-1.14-1-1.14z"/>
+      </svg>
+    </button>
+    <div class="ai-status" id="aiStatus">Нажмите микрофон или введите заказ ниже</div>
+    <div class="ai-input-row">
+      <input type="text" class="ai-text-input" id="aiTextInput" placeholder="Например: бургер и кола на Бабефа 4" />
+      <button type="button" class="ai-submit-btn" onclick="runAiText()">ИИ-заказ</button>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-title">Горячие блюда (Подогрев +60°C)</div>
+    <div class="zone-badge zone-hot">HOT<br/>ZONE</div>
+  </div>
+
+  <div class="item-card">
+    <div class="item-info">
+      <div class="item-name">Пицца «Пепперони» 35 см</div>
+      <div class="item-desc">Острая чоризо, моцарелла, томатный соус</div>
+      <div class="item-price">690 ₽</div>
+    </div>
+    <div class="item-action" id="act-pepperoni">
+      <button type="button" class="add-btn" onclick="changeQty('pepperoni', 1)">+ В корзину</button>
+    </div>
+  </div>
+
+  <div class="item-card">
+    <div class="item-info">
+      <div class="item-name">Пицца «4 Сыра» 35 см</div>
+      <div class="item-desc">Дорблю, пармезан, чеддер, сливочный соус</div>
+      <div class="item-price">740 ₽</div>
+    </div>
+    <div class="item-action" id="act-four_cheese">
+      <button type="button" class="add-btn" onclick="changeQty('four_cheese', 1)">+ В корзину</button>
+    </div>
+  </div>
+
+  <div class="item-card">
+    <div class="item-info">
+      <div class="item-name">Фирменный Ровер-Бургер</div>
+      <div class="item-desc">Мраморная говядина, чеддер, соус гриль, булочка бриошь</div>
+      <div class="item-price">450 ₽</div>
+    </div>
+    <div class="item-action" id="act-burger">
+      <button type="button" class="add-btn" onclick="changeQty('burger', 1)">+ В корзину</button>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-title">Напитки и десерты (Охлаждение +4°C)</div>
+    <div class="zone-badge zone-cold">COLD<br/>ZONE</div>
+  </div>
+
+  <div class="item-card">
+    <div class="item-info">
+      <div class="item-name">Кола Добрый 0.5 л (Ледяная)</div>
+      <div class="item-desc">В алюминиевой банке, охлажденная</div>
+      <div class="item-price">120 ₽</div>
+    </div>
+    <div class="item-action" id="act-cola">
+      <button type="button" class="add-btn" onclick="changeQty('cola', 1)">+ В корзину</button>
+    </div>
+  </div>
+
+  <div class="item-card">
+    <div class="item-info">
+      <div class="item-name">Сет «Филадельфия Лайт»</div>
+      <div class="item-desc">Охлажденные роллы со свежим лососем</div>
+      <div class="item-price">580 ₽</div>
+    </div>
+    <div class="item-action" id="act-philadelphia">
+      <button type="button" class="add-btn" onclick="changeQty('philadelphia', 1)">+ В корзину</button>
+    </div>
+  </div>
+
+  <div class="address-box">
+    <label class="address-label" for="addressInput">Адрес доставки ровером (улица, дом, подъезд)</label>
+    <input type="text" class="address-input" id="addressInput" placeholder="Например: ул. Бабефа, 4, подъезд 1" />
+  </div>
+
+  <div class="bottom-bar">
+    <div>
+      <div class="cart-summary-label" id="cartCountLabel">Корзина: 0 блюд</div>
+      <div class="cart-summary-total" id="cartTotalLabel">0 ₽</div>
+    </div>
+    <button type="button" class="order-btn disabled" id="orderBtn" onclick="submitOrder()">Заказать доставку</button>
+  </div>
+
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal-card">
+      <div class="modal-title">🚀 Заказ принят ровером!</div>
+      <div class="modal-body" id="modalBody"></div>
+      <button type="button" class="modal-close" onclick="closeModal()">Отлично</button>
+    </div>
+  </div>
+
+  <script>
+    var MENU = {
+      pepperoni: { name: "Пицца «Пепперони» 35 см", price: 690, zone: "HOT (+60°C)", kw: ["пепперони", "пеперони", "пицц"] },
+      four_cheese: { name: "Пицца «4 Сыра» 35 см", price: 740, zone: "HOT (+60°C)", kw: ["сыр", "четыре сыра", "4 сыра"] },
+      burger: { name: "Фирменный Ровер-Бургер", price: 450, zone: "HOT (+60°C)", kw: ["бургер", "гамбургер", "чизбургер"] },
+      cola: { name: "Кола Добрый 0.5 л", price: 120, zone: "COLD (+4°C)", kw: ["кол", "газировк", "напит"] },
+      philadelphia: { name: "Сет «Филадельфия Лайт»", price: 580, zone: "COLD (+4°C)", kw: ["филадельф", "ролл", "суши", "сет"] }
+    };
+
+    var cart = {};
+
+    function changeQty(id, delta) {
+      var next = (cart[id] || 0) + delta;
+      if (next < 0) next = 0;
+      cart[id] = next;
+      updateUI();
+    }
+
+    function updateUI() {
+      var totalCount = 0;
+      var totalPrice = 0;
+
+      for (var id in MENU) {
+        if (!MENU.hasOwnProperty(id)) continue;
+        var qty = cart[id] || 0;
+        var box = document.getElementById("act-" + id);
+        if (box) {
+          if (qty === 0) {
+            box.innerHTML = '<button type="button" class="add-btn" onclick="changeQty('' + id + '', 1)">+ В корзину</button>';
+          } else {
+            box.innerHTML =
+              '<div class="qty-controls">' +
+                '<button type="button" class="qty-btn" onclick="changeQty('' + id + '', -1)">−</button>' +
+                '<span class="qty-val">' + qty + '</span>' +
+                '<button type="button" class="qty-btn" onclick="changeQty('' + id + '', 1)">+</button>' +
+              '</div>';
+            totalCount += qty;
+            totalPrice += qty * MENU[id].price;
+          }
+        }
+      }
+
+      var word = "блюд";
+      if (totalCount % 10 === 1 && totalCount % 100 !== 11) word = "блюдо";
+      else if ((totalCount % 10 === 2 || totalCount % 10 === 3 || totalCount % 10 === 4) && !(totalCount % 100 >= 12 && totalCount % 100 <= 14)) word = "блюда";
+
+      document.getElementById("cartCountLabel").innerText = "Корзина: " + totalCount + " " + word;
+      document.getElementById("cartTotalLabel").innerText = totalPrice + " ₽";
+
+      var btn = document.getElementById("orderBtn");
+      if (totalCount > 0) btn.classList.remove("disabled");
+      else btn.classList.add("disabled");
+    }
+
+    function runAiText() {
+      var input = document.getElementById("aiTextInput");
+      var status = document.getElementById("aiStatus");
+      var raw = (input.value || "").trim();
+
+      if (!raw) {
+        status.innerText = "Напишите заказ в поле выше (например: бургер и кола)";
+        input.focus();
+        return;
+      }
+
+      var lower = raw.toLowerCase();
+      var found = [];
+
+      for (var id in MENU) {
+        if (!MENU.hasOwnProperty(id)) continue;
+        var item = MENU[id];
+        for (var i = 0; i < item.kw.length; i++) {
+          if (lower.indexOf(item.kw[i]) !== -1) {
+            cart[id] = (cart[id] || 0) + 1;
+            found.push(item.name);
+            break;
+          }
+        }
+      }
+
+      var match = raw.match(/(?:на|адрес|ул\.?|улица)\s+([а-яА-ЯёЁ0-9\s,.-]+)/i);
+      if (match && match[1]) {
+        document.getElementById("addressInput").value = match[1].trim();
+      }
+
+      if (found.length > 0) {
+        status.innerText = "✅ Добавлено: " + found.join(", ");
+        updateUI();
+      } else {
+        status.innerText = "Не нашёл в меню. Доступно: пепперони, 4 сыра, бургер, кола, роллы";
+      }
+    }
+
+    function startVoice() {
+      var status = document.getElementById("aiStatus");
+      var input = document.getElementById("aiTextInput");
+      var mic = document.getElementById("micBtn");
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SR) {
+        status.innerText = "Нажмите на поле ниже и продиктуйте через микрофон клавиатуры iPhone 🎙️";
+        input.focus();
+        return;
+      }
+
+      try {
+        var rec = new SR();
+        rec.lang = "ru-RU";
+        rec.interimResults = false;
+        mic.classList.add("recording");
+        status.innerText = "Слушаю... Назовите блюда и адрес";
+
+        rec.onresult = function (e) {
+          var text = e.results[0][0].transcript;
+          input.value = text;
+          runAiText();
+        };
+        rec.onerror = function () {
+          status.innerText = "Нажмите на поле ниже и используйте микрофон на клавиатуре iPhone 🎙️";
+          input.focus();
+        };
+        rec.onend = function () {
+          mic.classList.remove("recording");
+        };
+        rec.start();
+      } catch (err) {
+        mic.classList.remove("recording");
+        status.innerText = "Нажмите на поле ниже и используйте микрофон на клавиатуре iPhone 🎙️";
+        input.focus();
+      }
+    }
+
+    function submitOrder() {
+      var totalCount = 0;
+      for (var id in cart) {
+        if (cart.hasOwnProperty(id) && cart[id] > 0) totalCount += cart[id];
+      }
+      if (totalCount === 0) {
+        document.getElementById("aiStatus").innerText = "Сначала добавьте хотя бы одно блюдо в корзину";
+        return;
+      }
+
+      var addr = document.getElementById("addressInput").value.trim() || "Эллинг, ул. Бабефа, 4";
+      var hot = [];
+      var cold = [];
+      var sum = 0;
+
+      for (var key in cart) {
+        if (cart.hasOwnProperty(key) && cart[key] > 0) {
+          var q = cart[key];
+          var m = MENU[key];
+          sum += q * m.price;
+          var line = "• " + m.name + " × " + q + " (" + (q * m.price) + " ₽)";
+          if (m.zone.indexOf("HOT") !== -1) hot.push(line);
+          else cold.push(line);
+        }
+      }
+
+      var text = "📍 Адрес: " + addr + "
+
+";
+      if (hot.length > 0) text += "🔥 HOT ZONE (+60°C):
+" + hot.join("
+") + "
+
+";
+      if (cold.length > 0) text += "❄️ COLD ZONE (+4°C):
+" + cold.join("
+") + "
+
+";
+      text += "💳 Итого: " + sum + " ₽";
+
+      document.getElementById("modalBody").innerText = text;
+      document.getElementById("orderModal").classList.add("open");
+    }
+
+    function closeModal() {
+      document.getElementById("orderModal").classList.remove("open");
+      cart = {};
+      updateUI();
+    }
+  </script>
+</body>
+</html>
